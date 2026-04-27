@@ -4,6 +4,7 @@ import ds.kready.dto.GradeAssignmentDto;
 import ds.kready.model.Athlete;
 import ds.kready.model.AthleteGrade;
 import ds.kready.model.Grade;
+import ds.kready.repository.AthleteGradeRepository;
 import ds.kready.repository.AthleteRepository;
 import ds.kready.repository.GradeRepository;
 import lombok.RequiredArgsConstructor;
