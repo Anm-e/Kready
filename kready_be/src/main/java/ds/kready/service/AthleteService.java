@@ -2,9 +2,11 @@ package ds.kready.service;
 
 import ds.kready.dto.AthleteDetails;
 import ds.kready.dto.AthleteList;
+import ds.kready.dto.CreditDetails;
+import ds.kready.dto.GradeDetails;
 import ds.kready.model.Athlete;
-import ds.kready.repository.AthleteRepository;
-import ds.kready.repository.GradeRepository;
+import ds.kready.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,7 @@ import java.util.Optional;
 public class AthleteService {
     private final AthleteRepository athleteRepository;
     private final GradeRepository gradeRepository;
+    private final CreditRepository creditRepository;
 
     public List<AthleteList> getAthletes(){
         return athleteRepository.findAthletes();
@@ -38,13 +41,31 @@ public class AthleteService {
         athlete.ifPresent(athleteRepository::delete);
     }
 
-    public Athlete getAthleteDetails(Long id){
-        Optional<Athlete> oAthlete = athleteRepository.findById(id);
+    public AthleteDetails getAthleteDetails(Long id){
+        // 1. Recupero anagrafica base
+        Athlete athlete = athleteRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Atleta non trovato"));
 
-        if(oAthlete.isEmpty()){
-            return null;
-        }
+        // 2. Recupero liste correlate usando i DTO che hai creato
+        List<GradeDetails> grades = gradeRepository.findGradeDetailsByAthleteId(id);
+        List<CreditDetails> credits = creditRepository.findCreditDetailsByAthleteId(id);
 
-        return oAthlete.get();
+        // 3. Calcolo totali e grado attuale
+        String currentGrade = grades.isEmpty() ? "Nessun Grado" : grades.get(0).getGrade();
+        Long totalCredits = credits.stream()
+                .mapToLong(CreditDetails::getCredits)
+                .sum();
+
+        // 4. Assemblaggio DTO finale
+        return new AthleteDetails(
+                athlete.getName(),
+                athlete.getSurname(),
+                athlete.getBirthday(),
+                athlete.getStartDate(),
+                currentGrade,
+                grades,
+                credits,
+                totalCredits
+        );
     }
 }

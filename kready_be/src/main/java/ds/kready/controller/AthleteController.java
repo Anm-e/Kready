@@ -1,5 +1,6 @@
 package ds.kready.controller;
 
+import ds.kready.dto.AthleteDetails;
 import ds.kready.dto.AthleteList;
 import ds.kready.model.Athlete;
 import ds.kready.service.AthleteService;
@@ -26,7 +27,7 @@ public class AthleteController {
 
     @Operation(summary = "get an athlete details")
     @GetMapping("{id}")
-    public Athlete getAthleteDetails(@PathVariable("id") Long id){
+    public AthleteDetails getAthleteDetails(@PathVariable("id") Long id){
         return athleteService.getAthleteDetails(id);
     }
 
