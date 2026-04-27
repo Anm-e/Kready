@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestione Atleti</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 30px;
+        background-color: #f4f7f6;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #007bff;
+        color: white;
+      }
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+
+      /* Stile per il bottone occhio */
+      .btn-view {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: #007bff;
+        transition: transform 0.2s;
+      }
+      .btn-view:hover {
+        transform: scale(1.3);
+        color: #0056b3;
+      }
+
+      .error {
+        color: red;
+        display: none;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Lista Atleti</h2>
+    <div id="errorMessage" class="error"></div>
+
+    <table id="athleteTable">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Grado</th>
+          <th>Crediti</th>
+          <th style="width: 50px">Dettagli</th>
+        </tr>
+      </thead>
+      <tbody id="athleteBody"></tbody>
+    </table>
+
+    <script>
+      const API_BASE_URL = "http://localhost:8080/athlete";
+
+      // 1. Funzione per caricare la lista completa
+      async function caricaAtleti() {
+        try {
+          const response = await fetch(API_BASE_URL);
+          if (!response.ok) throw new Error("Errore nel caricamento lista");
+          const atleti = await response.json();
+
+          const tbody = document.getElementById("athleteBody");
+          tbody.innerHTML = "";
+
+          atleti.forEach((atleta) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                        <td>${atleta.name}</td>
+                        <td>${atleta.grade}</td>
+                        <td>${atleta.credits}</td>
+                        <td style="text-align: center;">
+                            <button class="btn-view" onclick="mostraDettagli(${atleta.id})" title="Vedi Dettagli">
+                                👁
+                            </button>
+                        </td>
+                    `;
+            tbody.appendChild(row);
+          });
+        } catch (error) {
+          mostraErrore(error.message);
+        }
+      }
+
+      // 2. Funzione per richiamare il singolo atleta (Dettaglio)
+      async function mostraDettagli(id) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/${id}`);
+          if (!response.ok) throw new Error("Atleta non trovato");
+
+          const a = await response.json();
+
+          // Per ora mostriamo i dettagli in un alert formattato
+          // Puoi sostituire questo alert con un modal HTML/CSS
+          alert(
+            `Dettagli Atleta:\n\n` +
+              `Nome: ${a.name} ${a.surname}\n` +
+              `Data di Nascita: ${a.birthday}\n` +
+              `Genere: ${a.gender}\n` +
+              `Data Iscrizione: ${a.startDate}`,
+          );
+        } catch (error) {
+          alert("Errore nel recupero dei dettagli: " + error.message);
+        }
+      }
+
+      function mostraErrore(msg) {
+        const errorDiv = document.getElementById("errorMessage");
+        errorDiv.innerText = msg;
+        errorDiv.style.display = "block";
+      }
+
+      document.addEventListener("DOMContentLoaded", caricaAtleti);
+    </script>
+  </body>
+</html>

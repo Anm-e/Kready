@@ -12,7 +12,6 @@ import lombok.Setter;
 public class AthleteList {
     private Long id;
     private String name;
-    private String surname;
     private String grade;
     private Long credits;
 }

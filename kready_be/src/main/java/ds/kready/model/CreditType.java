@@ -12,5 +12,5 @@ public class CreditType {
     private Long id;
 
     private String type;
-    private Integer value;
+    private Integer creditValue;
 }

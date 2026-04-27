@@ -14,6 +14,7 @@ import java.util.List;
 @RequestMapping("athlete")
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class AthleteController {
     private final AthleteService athleteService;
 
@@ -36,7 +37,7 @@ public class AthleteController {
     }
 
     @Operation(summary = "update an athlete")
-    @PutMapping("{id}")
+    @PutMapping("")
     public void updateAthlete(@RequestBody Athlete athlete){
         athleteService.updateAthlete(athlete);
     }
