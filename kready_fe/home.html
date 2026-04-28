@@ -6,7 +6,7 @@
     <title>Gestione Atleti Kready</title>
     <style>
       :root {
-        --primary: #007bff;
+        --primary: #4274fe;
         --secondary: #6c757d;
         --success: #28a745;
         --dark: #333;
@@ -16,9 +16,27 @@
 
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        margin: 30px;
+        margin: 0;
         background-color: var(--light);
         color: var(--dark);
+      }
+
+      .main-header {
+        background-color: var(--primary);
+        color: white;
+        padding: 15px 30px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .main-header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+      }
+
+      .container {
+        padding: 0 30px 30px 30px;
       }
 
       .header-actions {
@@ -69,13 +87,12 @@
         text-align: left;
         border-bottom: 1px solid #eee;
       }
-
       th {
         background-color: var(--primary);
         color: white;
-        font-weight: 600;
       }
 
+      /* Modale Base */
       .modal {
         display: none;
         position: fixed;
@@ -90,16 +107,16 @@
 
       .modal-content {
         background: var(--white);
-        margin: 2% auto;
+        margin: 2vh auto;
         padding: 25px;
         border-radius: 12px;
-        width: 90%;
-        max-width: 750px;
-        max-height: 90vh;
-        overflow-y: hidden;
+        width: 95%;
+        max-width: 1100px;
+        height: 85vh;
         display: flex;
         flex-direction: column;
         position: relative;
+        /* Rimosso overflow qui per non rompere lo sticky sotto */
       }
 
       .close-btn {
@@ -109,36 +126,81 @@
         font-size: 24px;
         cursor: pointer;
         color: #888;
-        z-index: 10;
+        z-index: 100;
       }
 
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 15px;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+
+      /* Wrapper per le due tabelle affiancate */
+      .tables-wrapper {
+        display: flex;
+        gap: 20px;
+        flex: 1;
+        min-height: 0; /* Fondamentale per permettere ai figli di scrollare */
+      }
+
+      .table-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        height: 100%;
+      }
+
+      /* FIX STICKY: Il contenitore dello scroll deve avere position: relative */
       .table-container {
-        max-height: 200px;
+        flex: 1;
         overflow-y: auto;
         border: 1px solid #eee;
         border-radius: 4px;
-        margin-bottom: 15px;
+        position: relative;
+        background: white;
       }
 
       .modal-table {
         width: 100%;
-        border-collapse: collapse;
-        font-size: 0.9rem;
+        border-collapse: separate; /* Obbligatorio per lo sticky con i bordi */
+        border-spacing: 0;
       }
 
+      /* L'intestazione che deve stare ferma */
       .modal-table th {
-        background-color: var(--secondary);
         position: sticky;
         top: 0;
-        padding: 8px;
-        z-index: 1;
+        z-index: 50;
+        background-color: var(--secondary) !important;
+        color: white;
+        padding: 12px 10px;
+        margin: 0;
+        box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.1); /* Simula il bordo inferiore */
       }
 
       .modal-table td {
-        padding: 8px;
-        background: white;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
       }
 
+      h4 {
+        border-left: 4px solid var(--primary);
+        padding-left: 10px;
+        margin: 10px 0;
+        flex-shrink: 0;
+      }
+
+      .btn-view {
+        background: none;
+        color: var(--primary);
+        font-size: 1.2rem;
+      }
       .form-group {
         margin-bottom: 15px;
       }
@@ -146,7 +208,6 @@
         display: block;
         margin-bottom: 5px;
         font-weight: bold;
-        font-size: 14px;
       }
       .form-group input,
       .form-group select {
@@ -156,7 +217,6 @@
         border-radius: 4px;
         box-sizing: border-box;
       }
-
       .btn-submit {
         width: 100%;
         background: var(--primary);
@@ -166,60 +226,55 @@
         margin-top: 10px;
       }
 
-      .info-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-bottom: 15px;
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 8px;
-        flex-shrink: 0;
-      }
-
-      h4 {
-        border-left: 4px solid var(--primary);
-        padding-left: 10px;
-        margin: 15px 0 10px;
-        color: var(--dark);
-        flex-shrink: 0;
-      }
-
-      .btn-view {
-        background: none;
-        color: var(--primary);
-        font-size: 1.2rem;
-        padding: 5px;
+      @media (max-width: 800px) {
+        .tables-wrapper {
+          flex-direction: column;
+        }
+        .info-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .modal-content {
+          height: 95vh;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="header-actions">
-      <h2>Registro Atleti</h2>
-      <div class="btn-group">
-        <button class="btn-credit" onclick="apriModaleCredito()">
-          + Crea Credito
-        </button>
-        <button class="btn-add" onclick="apriModale('addModal')">
-          + Aggiungi Atleta
-        </button>
+    <header class="main-header">
+      <h1>KReady</h1>
+    </header>
+
+    <div class="container">
+      <div class="header-actions">
+        <h2>Registro Atleti</h2>
+        <div class="btn-group">
+          <button class="btn-credit" onclick="apriModaleCredito()">
+            + Crea Credito
+          </button>
+          <button class="btn-add" onclick="apriModale('addModal')">
+            + Aggiungi Atleta
+          </button>
+        </div>
       </div>
+
+      <table id="athleteTable">
+        <thead>
+          <tr>
+            <th>Atleta</th>
+            <th>Grado</th>
+            <th>Crediti Validi</th>
+            <th style="width: 80px; text-align: center">Dettagli</th>
+          </tr>
+        </thead>
+        <tbody id="athleteBody"></tbody>
+      </table>
     </div>
 
-    <table id="athleteTable">
-      <thead>
-        <tr>
-          <th>Atleta</th>
-          <th>Grado</th>
-          <th>Crediti attuali</th>
-          <th style="width: 80px; text-align: center">Dettagli</th>
-        </tr>
-      </thead>
-      <tbody id="athleteBody"></tbody>
-    </table>
-
     <div id="addModal" class="modal">
-      <div class="modal-content" style="overflow-y: auto">
+      <div
+        class="modal-content"
+        style="height: auto; max-height: 90vh; overflow-y: auto"
+      >
         <span class="close-btn" onclick="chiudiModale('addModal')"
           >&times;</span
         >
@@ -236,8 +291,8 @@
             ><input type="date" id="birthday" required />
           </div>
           <div class="form-group">
-            <label>Genere</label>
-            <select id="gender">
+            <label>Genere</label
+            ><select id="gender">
               <option value="M">Maschio</option>
               <option value="F">Femmina</option>
             </select>
@@ -251,52 +306,11 @@
       </div>
     </div>
 
-    <div id="detailModal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn" onclick="chiudiModale('detailModal')"
-          >&times;</span
-        >
-        <h3 id="m-full-name">Dettagli Atleta</h3>
-        <div class="info-grid">
-          <div>
-            <strong>Data Nascita:</strong> <span id="m-birthday"></span>
-          </div>
-          <div><strong>Inizio:</strong> <span id="m-startDate"></span></div>
-          <div><strong>Grado Attuale:</strong> <span id="m-grade"></span></div>
-          <div>
-            <strong>Totale Crediti:</strong> <span id="m-totalCredits"></span>
-          </div>
-        </div>
-        <h4>Storico Gradi</h4>
-        <div class="table-container">
-          <table class="modal-table">
-            <thead>
-              <tr>
-                <th>Grado</th>
-                <th>Data Conseguimento</th>
-              </tr>
-            </thead>
-            <tbody id="m-previousGrades"></tbody>
-          </table>
-        </div>
-        <h4>Dettaglio Crediti</h4>
-        <div class="table-container">
-          <table class="modal-table">
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Tipo Attività</th>
-                <th>Crediti</th>
-              </tr>
-            </thead>
-            <tbody id="m-creditsList"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
     <div id="creditModal" class="modal">
-      <div class="modal-content" style="overflow-y: auto">
+      <div
+        class="modal-content"
+        style="height: auto; max-height: 90vh; overflow-y: auto"
+      >
         <span class="close-btn" onclick="chiudiModale('creditModal')"
           >&times;</span
         >
@@ -311,13 +325,68 @@
             ><input type="text" id="c-place" required />
           </div>
           <div class="form-group">
-            <label>Tipo di Credito</label>
-            <select id="c-type" required>
-              <option value="">Caricamento tipi...</option>
+            <label>Tipo di Credito</label
+            ><select id="c-type" required>
+              <option value="">Caricamento...</option>
             </select>
           </div>
           <button type="submit" class="btn-submit">Invia Credito</button>
         </form>
+      </div>
+    </div>
+
+    <div id="detailModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="chiudiModale('detailModal')"
+          >&times;</span
+        >
+        <h3 id="m-full-name">Dettagli Atleta</h3>
+
+        <div class="info-grid">
+          <div><strong>Età:</strong> <span id="m-age"></span> anni</div>
+          <div><strong>Nascita:</strong> <span id="m-birthday"></span></div>
+          <div><strong>Inizio:</strong> <span id="m-startDate"></span></div>
+          <div><strong>Grado:</strong> <span id="m-grade"></span></div>
+          <div>
+            <strong>Totale Pt:</strong> <span id="m-totalCredits"></span>
+          </div>
+          <div>
+            <strong>Validi Pt:</strong> <span id="m-validCredits"></span>
+          </div>
+        </div>
+
+        <div class="tables-wrapper">
+          <div class="table-section">
+            <h4>Storico Gradi</h4>
+            <div class="table-container">
+              <table class="modal-table">
+                <thead>
+                  <tr>
+                    <th>Grado</th>
+                    <th>Data</th>
+                  </tr>
+                </thead>
+                <tbody id="m-previousGrades"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="table-section">
+            <h4>Dettaglio Crediti</h4>
+            <div class="table-container">
+              <table class="modal-table">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Attività</th>
+                    <th>Punti</th>
+                  </tr>
+                </thead>
+                <tbody id="m-creditsList"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -327,13 +396,29 @@
       const CREDIT_URL = `${BASE_URL}/credit`;
       const TYPES_URL = `${BASE_URL}/credit/type`;
 
-      // --- FUNZIONE DI FORMATTAZIONE DATA ---
       function formattaData(stringaData) {
         if (!stringaData) return "-";
-        const opzioni = { day: "numeric", month: "short", year: "numeric" };
         return new Date(stringaData)
-          .toLocaleDateString("it-IT", opzioni)
+          .toLocaleDateString("it-IT", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })
           .replace(".", "");
+      }
+
+      function calcolaEta(dataNascita) {
+        if (!dataNascita) return "-";
+        const oggi = new Date();
+        const nascita = new Date(dataNascita);
+        let eta = oggi.getFullYear() - nascita.getFullYear();
+        if (
+          oggi.getMonth() < nascita.getMonth() ||
+          (oggi.getMonth() === nascita.getMonth() &&
+            oggi.getDate() < nascita.getDate())
+        )
+          eta--;
+        return eta;
       }
 
       async function caricaAtleti() {
@@ -344,12 +429,10 @@
             .map(
               (a) => `
             <tr>
-              <td>${a.name || "N/A"}</td>
+              <td>${a.name} ${a.surname || ""}</td>
               <td>${a.grade || "-"}</td>
               <td>${a.credits || 0}</td>
-              <td style="text-align: center;">
-                <button class="btn-view" onclick="mostraDettagli(${a.id})">👁</button>
-              </td>
+              <td style="text-align: center;"><button class="btn-view" onclick="mostraDettagli(${a.id})">👁</button></td>
             </tr>`,
             )
             .join("");
@@ -362,11 +445,9 @@
         try {
           const r = await fetch(`${API_URL}/${id}`);
           const a = await r.json();
-
-          document.getElementById("m-full-name").innerText = a.surname
-            ? `${a.name} ${a.surname}`
-            : a.name;
-          // Formattazione date nei dettagli
+          document.getElementById("m-full-name").innerText =
+            `${a.name} ${a.surname || ""}`;
+          document.getElementById("m-age").innerText = calcolaEta(a.birthday);
           document.getElementById("m-birthday").innerText = formattaData(
             a.birthday,
           );
@@ -375,6 +456,8 @@
           );
           document.getElementById("m-grade").innerText = a.grade || "-";
           document.getElementById("m-totalCredits").innerText =
+            a.totalCredits || 0;
+          document.getElementById("m-validCredits").innerText =
             a.totalCredits || 0;
 
           document.getElementById("m-previousGrades").innerHTML = a
@@ -385,7 +468,7 @@
                     `<tr><td>${pg.grade}</td><td>${formattaData(pg.achievementDate)}</td></tr>`,
                 )
                 .join("")
-            : '<tr><td colspan="2" style="text-align:center">Nessuno storico</td></tr>';
+            : '<tr><td colspan="2" style="text-align:center; padding: 20px;">Nessuno storico</td></tr>';
 
           document.getElementById("m-creditsList").innerHTML = a.credits?.length
             ? a.credits
@@ -394,7 +477,7 @@
                     `<tr><td>${formattaData(c.date)}</td><td>${c.type}</td><td><strong>+${c.credits}</strong></td></tr>`,
                 )
                 .join("")
-            : '<tr><td colspan="3" style="text-align:center">Nessun credito</td></tr>';
+            : '<tr><td colspan="3" style="text-align:center; padding: 20px;">Nessun credito</td></tr>';
 
           apriModale("detailModal");
         } catch (e) {
@@ -424,16 +507,15 @@
 
       async function apriModaleCredito() {
         apriModale("creditModal");
-        const select = document.getElementById("c-type");
-        document.getElementById("c-date").valueAsDate = new Date();
         const r = await fetch(TYPES_URL);
         const tipi = await r.json();
-        select.innerHTML = tipi
+        document.getElementById("c-type").innerHTML = tipi
           .map(
             (t) =>
               `<option value="${t.id}">${t.type} (${t.creditValue} pt)</option>`,
           )
           .join("");
+        document.getElementById("c-date").valueAsDate = new Date();
       }
 
       document
