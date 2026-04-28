@@ -7,58 +7,75 @@
     <style>
       :root {
         --primary: #007bff;
+        --secondary: #6c757d;
         --success: #28a745;
         --dark: #333;
         --light: #f4f7f6;
+        --white: #ffffff;
       }
+
       body {
-        font-family: "Segoe UI", sans-serif;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         margin: 30px;
         background-color: var(--light);
         color: var(--dark);
       }
+
       .header-actions {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: 20px;
       }
+
       .btn-group {
         display: flex;
         gap: 10px;
       }
-      button.btn-add {
-        background-color: var(--success);
-        color: white;
+
+      button {
         border: none;
-        padding: 10px 20px;
         border-radius: 5px;
         cursor: pointer;
         font-weight: bold;
         transition: opacity 0.2s;
+        padding: 10px 20px;
+      }
+
+      button.btn-add {
+        background-color: var(--success);
+        color: white;
       }
       button.btn-credit {
         background-color: var(--primary);
+        color: white;
       }
       button:hover {
         opacity: 0.9;
       }
+
       table {
         width: 100%;
         border-collapse: collapse;
-        background: white;
+        background: var(--white);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
       }
+
       th,
       td {
-        border: 1px solid #eee;
         padding: 12px;
         text-align: left;
+        border-bottom: 1px solid #eee;
       }
+
       th {
         background-color: var(--primary);
         color: white;
+        font-weight: 600;
       }
+
       .modal {
         display: none;
         position: fixed;
@@ -70,17 +87,21 @@
         background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(3px);
       }
+
       .modal-content {
-        background: white;
-        margin: 5% auto;
+        background: var(--white);
+        margin: 2% auto;
         padding: 25px;
         border-radius: 12px;
         width: 90%;
-        max-width: 600px;
-        max-height: 85vh;
-        overflow-y: auto;
+        max-width: 750px;
+        max-height: 90vh;
+        overflow-y: hidden;
+        display: flex;
+        flex-direction: column;
         position: relative;
       }
+
       .close-btn {
         position: absolute;
         right: 20px;
@@ -88,7 +109,36 @@
         font-size: 24px;
         cursor: pointer;
         color: #888;
+        z-index: 10;
       }
+
+      .table-container {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        margin-bottom: 15px;
+      }
+
+      .modal-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      .modal-table th {
+        background-color: var(--secondary);
+        position: sticky;
+        top: 0;
+        padding: 8px;
+        z-index: 1;
+      }
+
+      .modal-table td {
+        padding: 8px;
+        background: white;
+      }
+
       .form-group {
         margin-bottom: 15px;
       }
@@ -106,35 +156,40 @@
         border-radius: 4px;
         box-sizing: border-box;
       }
+
       .btn-submit {
         width: 100%;
         background: var(--primary);
         color: white;
-        border: none;
         padding: 12px;
-        border-radius: 5px;
-        cursor: pointer;
         font-size: 16px;
         margin-top: 10px;
       }
+
       .info-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
         margin-bottom: 15px;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        flex-shrink: 0;
       }
+
       h4 {
-        background: #e9ecef;
-        padding: 5px 10px;
-        border-radius: 4px;
-        margin: 20px 0 10px;
+        border-left: 4px solid var(--primary);
+        padding-left: 10px;
+        margin: 15px 0 10px;
+        color: var(--dark);
+        flex-shrink: 0;
       }
+
       .btn-view {
         background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1.2rem;
         color: var(--primary);
+        font-size: 1.2rem;
+        padding: 5px;
       }
     </style>
   </head>
@@ -142,7 +197,7 @@
     <div class="header-actions">
       <h2>Registro Atleti</h2>
       <div class="btn-group">
-        <button class="btn-add btn-credit" onclick="apriModaleCredito()">
+        <button class="btn-credit" onclick="apriModaleCredito()">
           + Crea Credito
         </button>
         <button class="btn-add" onclick="apriModale('addModal')">
@@ -157,14 +212,14 @@
           <th>Atleta</th>
           <th>Grado</th>
           <th>Crediti attuali</th>
-          <th style="width: 50px; text-align: center">Dettagli</th>
+          <th style="width: 80px; text-align: center">Dettagli</th>
         </tr>
       </thead>
       <tbody id="athleteBody"></tbody>
     </table>
 
     <div id="addModal" class="modal">
-      <div class="modal-content">
+      <div class="modal-content" style="overflow-y: auto">
         <span class="close-btn" onclick="chiudiModale('addModal')"
           >&times;</span
         >
@@ -213,31 +268,47 @@
           </div>
         </div>
         <h4>Storico Gradi</h4>
-        <ul id="m-previousGrades"></ul>
+        <div class="table-container">
+          <table class="modal-table">
+            <thead>
+              <tr>
+                <th>Grado</th>
+                <th>Data Conseguimento</th>
+              </tr>
+            </thead>
+            <tbody id="m-previousGrades"></tbody>
+          </table>
+        </div>
         <h4>Dettaglio Crediti</h4>
-        <ul id="m-creditsList"></ul>
+        <div class="table-container">
+          <table class="modal-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo Attività</th>
+                <th>Crediti</th>
+              </tr>
+            </thead>
+            <tbody id="m-creditsList"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <div id="creditModal" class="modal">
-      <div class="modal-content">
+      <div class="modal-content" style="overflow-y: auto">
         <span class="close-btn" onclick="chiudiModale('creditModal')"
           >&times;</span
         >
         <h3>Registra Nuovo Credito</h3>
         <form id="addCreditForm">
           <div class="form-group">
-            <label>Data Attività</label>
-            <input type="date" id="c-date" required />
+            <label>Data Attività</label
+            ><input type="date" id="c-date" required />
           </div>
           <div class="form-group">
-            <label>Luogo / Evento</label>
-            <input
-              type="text"
-              id="c-place"
-              placeholder="Es. Palestra Kready"
-              required
-            />
+            <label>Luogo / Evento</label
+            ><input type="text" id="c-place" required />
           </div>
           <div class="form-group">
             <label>Tipo di Credito</label>
@@ -256,35 +327,81 @@
       const CREDIT_URL = `${BASE_URL}/credit`;
       const TYPES_URL = `${BASE_URL}/credit/type`;
 
-      // 1. CARICAMENTO TABELLA (Corretto campo 'name')
+      // --- FUNZIONE DI FORMATTAZIONE DATA ---
+      function formattaData(stringaData) {
+        if (!stringaData) return "-";
+        const opzioni = { day: "numeric", month: "short", year: "numeric" };
+        return new Date(stringaData)
+          .toLocaleDateString("it-IT", opzioni)
+          .replace(".", "");
+      }
+
       async function caricaAtleti() {
         try {
           const r = await fetch(API_URL);
-          if (!r.ok) throw new Error("Errore server");
           const data = await r.json();
-          const tbody = document.getElementById("athleteBody");
-
-          // Usiamo solo a.name perché l'API restituisce solo quello nella lista
-          tbody.innerHTML = data
+          document.getElementById("athleteBody").innerHTML = data
             .map(
               (a) => `
-                    <tr>
-                        <td>${a.name || "N/A"}</td>
-                        <td>${a.grade || "-"}</td>
-                        <td>${a.credits || 0}</td>
-                        <td style="text-align: center;">
-                            <button class="btn-view" onclick="mostraDettagli(${a.id})">👁</button>
-                        </td>
-                    </tr>
-                `,
+            <tr>
+              <td>${a.name || "N/A"}</td>
+              <td>${a.grade || "-"}</td>
+              <td>${a.credits || 0}</td>
+              <td style="text-align: center;">
+                <button class="btn-view" onclick="mostraDettagli(${a.id})">👁</button>
+              </td>
+            </tr>`,
             )
             .join("");
         } catch (e) {
-          console.error("Errore caricamento atleti:", e);
+          console.error(e);
         }
       }
 
-      // 2. CREAZIONE ATLETA
+      async function mostraDettagli(id) {
+        try {
+          const r = await fetch(`${API_URL}/${id}`);
+          const a = await r.json();
+
+          document.getElementById("m-full-name").innerText = a.surname
+            ? `${a.name} ${a.surname}`
+            : a.name;
+          // Formattazione date nei dettagli
+          document.getElementById("m-birthday").innerText = formattaData(
+            a.birthday,
+          );
+          document.getElementById("m-startDate").innerText = formattaData(
+            a.startDate,
+          );
+          document.getElementById("m-grade").innerText = a.grade || "-";
+          document.getElementById("m-totalCredits").innerText =
+            a.totalCredits || 0;
+
+          document.getElementById("m-previousGrades").innerHTML = a
+            .previousGrades?.length
+            ? a.previousGrades
+                .map(
+                  (pg) =>
+                    `<tr><td>${pg.grade}</td><td>${formattaData(pg.achievementDate)}</td></tr>`,
+                )
+                .join("")
+            : '<tr><td colspan="2" style="text-align:center">Nessuno storico</td></tr>';
+
+          document.getElementById("m-creditsList").innerHTML = a.credits?.length
+            ? a.credits
+                .map(
+                  (c) =>
+                    `<tr><td>${formattaData(c.date)}</td><td>${c.type}</td><td><strong>+${c.credits}</strong></td></tr>`,
+                )
+                .join("")
+            : '<tr><td colspan="3" style="text-align:center">Nessun credito</td></tr>';
+
+          apriModale("detailModal");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
       document
         .getElementById("addAthleteForm")
         .addEventListener("submit", async (e) => {
@@ -296,74 +413,27 @@
             gender: document.getElementById("gender").value,
             startDate: document.getElementById("startDate").value,
           };
-          try {
-            await fetch(API_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(nuovo),
-            });
-            chiudiModale("addModal");
-            document.getElementById("addAthleteForm").reset();
-            caricaAtleti();
-          } catch (error) {
-            console.error("Errore salvataggio atleta:", error);
-          }
+          await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(nuovo),
+          });
+          chiudiModale("addModal");
+          caricaAtleti();
         });
 
-      // 3. MOSTRA DETTAGLI (Qui surname potrebbe essere presente se l'API ID è più dettagliata)
-      async function mostraDettagli(id) {
-        try {
-          const r = await fetch(`${API_URL}/${id}`);
-          const a = await r.json();
-
-          // Gestione nome completo per i dettagli
-          const nomeCompleto = a.surname ? `${a.name} ${a.surname}` : a.name;
-          document.getElementById("m-full-name").innerText = nomeCompleto;
-
-          document.getElementById("m-birthday").innerText = a.birthday || "-";
-          document.getElementById("m-startDate").innerText = a.startDate || "-";
-          document.getElementById("m-grade").innerText = a.grade || "-";
-          document.getElementById("m-totalCredits").innerText =
-            a.totalCredits || 0;
-
-          document.getElementById("m-previousGrades").innerHTML =
-            a.previousGrades
-              ?.map((pg) => `<li>${pg.grade} (${pg.achievementDate})</li>`)
-              .join("") || "<li>Nessuno storico</li>";
-          document.getElementById("m-creditsList").innerHTML =
-            a.credits
-              ?.map(
-                (c) => `<li>[${c.date}] ${c.type} (+${c.credits} crediti)</li>`,
-              )
-              .join("") || "<li>Nessun credito</li>";
-          apriModale("detailModal");
-        } catch (e) {
-          console.error("Errore dettagli:", e);
-        }
-      }
-
-      // 4. GESTIONE CREDITI
       async function apriModaleCredito() {
         apriModale("creditModal");
         const select = document.getElementById("c-type");
         document.getElementById("c-date").valueAsDate = new Date();
-        select.innerHTML = '<option value="">Caricamento...</option>';
-
-        try {
-          const r = await fetch(TYPES_URL);
-          if (!r.ok) throw new Error("Errore caricamento tipi");
-          const tipi = await r.json();
-          select.innerHTML = tipi
-            .map(
-              (t) =>
-                `<option value="${t.id}">${t.type} (${t.creditValue} pt)</option>`,
-            )
-            .join("");
-        } catch (e) {
-          console.error("Errore tipi credito:", e);
-          select.innerHTML =
-            '<option value="">Errore (Controlla CORS)</option>';
-        }
+        const r = await fetch(TYPES_URL);
+        const tipi = await r.json();
+        select.innerHTML = tipi
+          .map(
+            (t) =>
+              `<option value="${t.id}">${t.type} (${t.creditValue} pt)</option>`,
+          )
+          .join("");
       }
 
       document
@@ -375,21 +445,14 @@
             place: document.getElementById("c-place").value,
             creditType: parseInt(document.getElementById("c-type").value),
           };
-          try {
-            const res = await fetch(CREDIT_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(body),
-            });
-            if (res.ok) {
-              chiudiModale("creditModal");
-              document.getElementById("addCreditForm").reset();
-              caricaAtleti();
-            } else {
-              alert("Errore invio");
-            }
-          } catch (error) {
-            console.error("Errore invio:", error);
+          const res = await fetch(CREDIT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (res.ok) {
+            chiudiModale("creditModal");
+            caricaAtleti();
           }
         });
 

@@ -15,6 +15,7 @@ public interface CreditRepository extends JpaRepository<Credit, Long> {
             "FROM AthleteCredit ac " +
             "JOIN ac.credit c " +
             "JOIN c.creditType ct " +
-            "WHERE ac.athlete.id = :athleteId")
+            "WHERE ac.athlete.id = :athleteId " +
+            "ORDER BY c.date DESC")
     List<CreditDetails> findCreditDetailsByAthleteId(@Param("athleteId") Long athleteId);
 }
