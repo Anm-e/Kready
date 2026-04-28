@@ -1,5 +1,6 @@
 package ds.kready.controller;
 
+import ds.kready.dto.CreditAssignment;
 import ds.kready.dto.CreditCreation;
 import ds.kready.model.Credit;
 import ds.kready.model.CreditType;
@@ -28,6 +29,11 @@ public class CreditController {
     @GetMapping("type")
     public List<CreditType> getCreditTypes(){
         return creditService.getCreditTypes();
+    }
+
+    @PostMapping("assign")
+    public void assignCredit(@RequestBody List<CreditAssignment> body){
+        creditService.assignCredit(body);
     }
 
 }

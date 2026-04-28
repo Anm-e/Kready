@@ -14,8 +14,8 @@ public class Grade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String kyu;
     private String grade;
 
-    @Column(name = "needed_credits")
     private Integer neededCredits;
 }
