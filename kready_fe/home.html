@@ -1,178 +1,406 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gestione Atleti Kready</title>
     <style>
-        :root { --primary: #007bff; --success: #28a745; --dark: #333; --light: #f4f7f6; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 30px; background-color: var(--light); color: var(--dark); }
-        
-        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        
-        button.btn-add { 
-            background-color: var(--success); color: white; border: none; padding: 10px 20px; 
-            border-radius: 5px; cursor: pointer; font-weight: bold;
-        }
-
-        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        th, td { border: 1px solid #eee; padding: 12px; text-align: left; }
-        th { background-color: var(--primary); color: white; }
-
-        /* MODALI */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); }
-        .modal-content { background: white; margin: 5% auto; padding: 25px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .close-btn { position: absolute; right: 20px; top: 15px; font-size: 24px; cursor: pointer; color: #888; }
-
-        /* FORM & DETAILS */
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-        .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        h4 { background: #e9ecef; padding: 5px 10px; border-radius: 4px; margin: 20px 0 10px; }
-        ul { padding-left: 20px; font-size: 14px; }
-        .btn-view { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: var(--primary); }
+      :root {
+        --primary: #007bff;
+        --success: #28a745;
+        --dark: #333;
+        --light: #f4f7f6;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        margin: 30px;
+        background-color: var(--light);
+        color: var(--dark);
+      }
+      .header-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .btn-group {
+        display: flex;
+        gap: 10px;
+      }
+      button.btn-add {
+        background-color: var(--success);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: opacity 0.2s;
+      }
+      button.btn-credit {
+        background-color: var(--primary);
+      }
+      button:hover {
+        opacity: 0.9;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      th,
+      td {
+        border: 1px solid #eee;
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: var(--primary);
+        color: white;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(3px);
+      }
+      .modal-content {
+        background: white;
+        margin: 5% auto;
+        padding: 25px;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 85vh;
+        overflow-y: auto;
+        position: relative;
+      }
+      .close-btn {
+        position: absolute;
+        right: 20px;
+        top: 15px;
+        font-size: 24px;
+        cursor: pointer;
+        color: #888;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        font-size: 14px;
+      }
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      .btn-submit {
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+      }
+      .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+      h4 {
+        background: #e9ecef;
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin: 20px 0 10px;
+      }
+      .btn-view {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        color: var(--primary);
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="header-actions">
-        <h2>Registro Atleti</h2>
-        <button class="btn-add" onclick="apriModale('addModal')">+ Aggiungi Atleta</button>
+      <h2>Registro Atleti</h2>
+      <div class="btn-group">
+        <button class="btn-add btn-credit" onclick="apriModaleCredito()">
+          + Crea Credito
+        </button>
+        <button class="btn-add" onclick="apriModale('addModal')">
+          + Aggiungi Atleta
+        </button>
+      </div>
     </div>
 
     <table id="athleteTable">
-        <thead>
-            <tr>
-                <th>Atleta</th>
-                <th>Grado</th>
-                <th>Crediti</th>
-                <th style="width: 50px">Dettagli</th>
-            </tr>
-        </thead>
-        <tbody id="athleteBody"></tbody>
+      <thead>
+        <tr>
+          <th>Atleta</th>
+          <th>Grado</th>
+          <th>Crediti attuali</th>
+          <th style="width: 50px; text-align: center">Dettagli</th>
+        </tr>
+      </thead>
+      <tbody id="athleteBody"></tbody>
     </table>
 
     <div id="addModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="chiudiModale('addModal')">&times;</span>
-            <h3>Nuovo Atleta</h3>
-            <form id="addAthleteForm">
-                <div class="form-group"><label>Nome</label><input type="text" id="name" required></div>
-                <div class="form-group"><label>Cognome</label><input type="text" id="surname" required></div>
-                <div class="form-group"><label>Data di Nascita</label><input type="date" id="birthday" required></div>
-                <div class="form-group">
-                    <label>Genere</label>
-                    <select id="gender"><option value="M">Maschio</option><option value="F">Femmina</option></select>
-                </div>
-                <div class="form-group"><label>Data Inizio</label><input type="date" id="startDate" required></div>
-                <button type="submit" class="btn-submit">Salva Atleta</button>
-            </form>
-        </div>
+      <div class="modal-content">
+        <span class="close-btn" onclick="chiudiModale('addModal')"
+          >&times;</span
+        >
+        <h3>Nuovo Atleta</h3>
+        <form id="addAthleteForm">
+          <div class="form-group">
+            <label>Nome</label><input type="text" id="name" required />
+          </div>
+          <div class="form-group">
+            <label>Cognome</label><input type="text" id="surname" required />
+          </div>
+          <div class="form-group">
+            <label>Data di Nascita</label
+            ><input type="date" id="birthday" required />
+          </div>
+          <div class="form-group">
+            <label>Genere</label>
+            <select id="gender">
+              <option value="M">Maschio</option>
+              <option value="F">Femmina</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Data Inizio</label
+            ><input type="date" id="startDate" required />
+          </div>
+          <button type="submit" class="btn-submit">Salva Atleta</button>
+        </form>
+      </div>
     </div>
 
     <div id="detailModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="chiudiModale('detailModal')">&times;</span>
-            <h3 id="m-full-name">Dettagli Atleta</h3>
-            
-            <div class="info-grid">
-                <div><strong>Data Nascita:</strong> <span id="m-birthday"></span></div>
-                <div><strong>Inizio:</strong> <span id="m-startDate"></span></div>
-                <div><strong>Grado Attuale:</strong> <span id="m-grade"></span></div>
-                <div><strong>Totale Crediti:</strong> <span id="m-totalCredits"></span></div>
-            </div>
-
-            <h4>Storico Gradi</h4>
-            <ul id="m-previousGrades"></ul>
-
-            <h4>Dettaglio Crediti</h4>
-            <ul id="m-creditsList"></ul>
+      <div class="modal-content">
+        <span class="close-btn" onclick="chiudiModale('detailModal')"
+          >&times;</span
+        >
+        <h3 id="m-full-name">Dettagli Atleta</h3>
+        <div class="info-grid">
+          <div>
+            <strong>Data Nascita:</strong> <span id="m-birthday"></span>
+          </div>
+          <div><strong>Inizio:</strong> <span id="m-startDate"></span></div>
+          <div><strong>Grado Attuale:</strong> <span id="m-grade"></span></div>
+          <div>
+            <strong>Totale Crediti:</strong> <span id="m-totalCredits"></span>
+          </div>
         </div>
+        <h4>Storico Gradi</h4>
+        <ul id="m-previousGrades"></ul>
+        <h4>Dettaglio Crediti</h4>
+        <ul id="m-creditsList"></ul>
+      </div>
+    </div>
+
+    <div id="creditModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="chiudiModale('creditModal')"
+          >&times;</span
+        >
+        <h3>Registra Nuovo Credito</h3>
+        <form id="addCreditForm">
+          <div class="form-group">
+            <label>Data Attività</label>
+            <input type="date" id="c-date" required />
+          </div>
+          <div class="form-group">
+            <label>Luogo / Evento</label>
+            <input
+              type="text"
+              id="c-place"
+              placeholder="Es. Palestra Kready"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label>Tipo di Credito</label>
+            <select id="c-type" required>
+              <option value="">Caricamento tipi...</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-submit">Invia Credito</button>
+        </form>
+      </div>
     </div>
 
     <script>
-        const API_URL = "http://localhost:8080/athlete";
+      const BASE_URL = "http://localhost:8080";
+      const API_URL = `${BASE_URL}/athlete`;
+      const CREDIT_URL = `${BASE_URL}/credit`;
+      const TYPES_URL = `${BASE_URL}/credit/type`;
 
-        // 1. CARICAMENTO TABELLA
-        async function caricaAtleti() {
-            try {
-                const r = await fetch(API_URL);
-                const data = await r.json();
-                const tbody = document.getElementById("athleteBody");
-                tbody.innerHTML = data.map(a => `
+      // 1. CARICAMENTO TABELLA (Corretto campo 'name')
+      async function caricaAtleti() {
+        try {
+          const r = await fetch(API_URL);
+          if (!r.ok) throw new Error("Errore server");
+          const data = await r.json();
+          const tbody = document.getElementById("athleteBody");
+
+          // Usiamo solo a.name perché l'API restituisce solo quello nella lista
+          tbody.innerHTML = data
+            .map(
+              (a) => `
                     <tr>
-                        <td>${a.name}</td>
-                        <td>${a.grade}</td>
-                        <td>${a.credits}</td>
+                        <td>${a.name || "N/A"}</td>
+                        <td>${a.grade || "-"}</td>
+                        <td>${a.credits || 0}</td>
                         <td style="text-align: center;">
                             <button class="btn-view" onclick="mostraDettagli(${a.id})">👁</button>
                         </td>
                     </tr>
-                `).join('');
-            } catch (e) { console.error("Errore caricamento:", e); }
+                `,
+            )
+            .join("");
+        } catch (e) {
+          console.error("Errore caricamento atleti:", e);
         }
+      }
 
-        // 2. CREAZIONE ATLETA (POST)
-        document.getElementById("addAthleteForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const nuovo = {
-                name: document.getElementById("name").value,
-                surname: document.getElementById("surname").value,
-                birthday: document.getElementById("birthday").value,
-                gender: document.getElementById("gender").value,
-                startDate: document.getElementById("startDate").value
-            };
-
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'accept': '*/*' },
-                    body: JSON.stringify(nuovo)
-                });
-
-                if (response.ok) {
-                    chiudiModale('addModal');
-                    document.getElementById("addAthleteForm").reset();
-                    caricaAtleti(); // Aggiorna la tabella senza alert
-                }
-            } catch (error) { console.error("Errore salvataggio:", error); }
+      // 2. CREAZIONE ATLETA
+      document
+        .getElementById("addAthleteForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const nuovo = {
+            name: document.getElementById("name").value,
+            surname: document.getElementById("surname").value,
+            birthday: document.getElementById("birthday").value,
+            gender: document.getElementById("gender").value,
+            startDate: document.getElementById("startDate").value,
+          };
+          try {
+            await fetch(API_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(nuovo),
+            });
+            chiudiModale("addModal");
+            document.getElementById("addAthleteForm").reset();
+            caricaAtleti();
+          } catch (error) {
+            console.error("Errore salvataggio atleta:", error);
+          }
         });
 
-        // 3. MOSTRA DETTAGLI (GET ID)
-        async function mostraDettagli(id) {
-            try {
-                const r = await fetch(`${API_URL}/${id}`);
-                const a = await r.json();
+      // 3. MOSTRA DETTAGLI (Qui surname potrebbe essere presente se l'API ID è più dettagliata)
+      async function mostraDettagli(id) {
+        try {
+          const r = await fetch(`${API_URL}/${id}`);
+          const a = await r.json();
 
-                document.getElementById("m-full-name").innerText = `${a.name} ${a.surname}`;
-                document.getElementById("m-birthday").innerText = a.birthday;
-                document.getElementById("m-startDate").innerText = a.startDate;
-                document.getElementById("m-grade").innerText = a.grade;
-                document.getElementById("m-totalCredits").innerText = a.totalCredits;
+          // Gestione nome completo per i dettagli
+          const nomeCompleto = a.surname ? `${a.name} ${a.surname}` : a.name;
+          document.getElementById("m-full-name").innerText = nomeCompleto;
 
-                const prevGradesUl = document.getElementById("m-previousGrades");
-                prevGradesUl.innerHTML = a.previousGrades?.length 
-                    ? a.previousGrades.map(pg => `<li>${pg.grade} (${pg.achievementDate})</li>`).join('')
-                    : '<li>Nessuno storico</li>';
+          document.getElementById("m-birthday").innerText = a.birthday || "-";
+          document.getElementById("m-startDate").innerText = a.startDate || "-";
+          document.getElementById("m-grade").innerText = a.grade || "-";
+          document.getElementById("m-totalCredits").innerText =
+            a.totalCredits || 0;
 
-                const creditsUl = document.getElementById("m-creditsList");
-                creditsUl.innerHTML = a.credits?.length
-                    ? a.credits.map(c => `<li>[${c.date}] ${c.type} (${c.credits} pt)</li>`).join('')
-                    : '<li>Nessun credito</li>';
-
-                apriModale('detailModal');
-            } catch (e) { console.error("Errore dettagli:", e); }
+          document.getElementById("m-previousGrades").innerHTML =
+            a.previousGrades
+              ?.map((pg) => `<li>${pg.grade} (${pg.achievementDate})</li>`)
+              .join("") || "<li>Nessuno storico</li>";
+          document.getElementById("m-creditsList").innerHTML =
+            a.credits
+              ?.map((c) => `<li>[${c.date}] ${c.type} (${c.credits} pt)</li>`)
+              .join("") || "<li>Nessun credito</li>";
+          apriModale("detailModal");
+        } catch (e) {
+          console.error("Errore dettagli:", e);
         }
+      }
 
-        // UTILITY MODALI
-        function apriModale(id) { document.getElementById(id).style.display = "block"; }
-        function chiudiModale(id) { document.getElementById(id).style.display = "none"; }
-        window.onclick = (e) => { if (e.target.className === 'modal') e.target.style.display = "none"; }
+      // 4. GESTIONE CREDITI
+      async function apriModaleCredito() {
+        apriModale("creditModal");
+        const select = document.getElementById("c-type");
+        document.getElementById("c-date").valueAsDate = new Date();
+        select.innerHTML = '<option value="">Caricamento...</option>';
 
-        document.addEventListener("DOMContentLoaded", caricaAtleti);
+        try {
+          const r = await fetch(TYPES_URL);
+          if (!r.ok) throw new Error("Errore caricamento tipi");
+          const tipi = await r.json();
+          select.innerHTML = tipi
+            .map(
+              (t) =>
+                `<option value="${t.id}">${t.type} (${t.creditValue} pt)</option>`,
+            )
+            .join("");
+        } catch (e) {
+          console.error("Errore tipi credito:", e);
+          select.innerHTML =
+            '<option value="">Errore (Controlla CORS)</option>';
+        }
+      }
+
+      document
+        .getElementById("addCreditForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const body = {
+            date: document.getElementById("c-date").value,
+            place: document.getElementById("c-place").value,
+            creditType: parseInt(document.getElementById("c-type").value),
+          };
+          try {
+            const res = await fetch(CREDIT_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body),
+            });
+            if (res.ok) {
+              chiudiModale("creditModal");
+              document.getElementById("addCreditForm").reset();
+              caricaAtleti();
+            } else {
+              alert("Errore invio");
+            }
+          } catch (error) {
+            console.error("Errore invio:", error);
+          }
+        });
+
+      function apriModale(id) {
+        document.getElementById(id).style.display = "block";
+      }
+      function chiudiModale(id) {
+        document.getElementById(id).style.display = "none";
+      }
+      window.onclick = (e) => {
+        if (e.target.className === "modal") e.target.style.display = "none";
+      };
+      document.addEventListener("DOMContentLoaded", caricaAtleti);
     </script>
-</body>
+  </body>
 </html>

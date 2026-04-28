@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Grade")
 @RequestMapping("grade")
+@CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
 public class GradeController {
