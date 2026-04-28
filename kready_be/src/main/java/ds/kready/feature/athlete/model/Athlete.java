@@ -22,5 +22,6 @@ public class Athlete {
     private String surname;
     private LocalDate birthday;
     private String gender;
+    @Column(name = "start_date")
     private LocalDate startDate;
 }

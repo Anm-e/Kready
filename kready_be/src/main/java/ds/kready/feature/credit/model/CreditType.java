@@ -12,5 +12,6 @@ public class CreditType {
     private Long id;
 
     private String type;
+    @Column(name = "credit_value")
     private Integer creditValue;
 }

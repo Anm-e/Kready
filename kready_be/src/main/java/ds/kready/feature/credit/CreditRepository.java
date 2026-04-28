@@ -11,7 +11,8 @@ import java.util.List;
 
 @Repository
 public interface CreditRepository extends JpaRepository<Credit, Long> {
-    @Query("SELECT new ds.kready.feature.credit.dto.CreditDetails(c.id, ct.type, c.place, c.date, CAST(ct.creditValue AS long)) " +
+    @Query("SELECT new ds.kready.feature.credit.dto.CreditDetails(" +
+            "c.id, ct.type, c.place, c.date, CAST(ct.creditValue AS long)) " +
             "FROM AthleteCredit ac " +
             "JOIN ac.credit c " +
             "JOIN c.creditType ct " +
